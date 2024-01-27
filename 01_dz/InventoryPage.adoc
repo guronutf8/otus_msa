@@ -1,0 +1,53 @@
+= Tarkovloot сервис распознавания
+
+[cols="8*"]
+|===
+3+a| Name: 5+a| InventoryPage
+
+3+a| *Description:*
+5+a| Хранение информации о найденных предметах
+
+8+a| *Capabilities*
+8+a|
+Хранит распознанные данные со скриншота, отдает их пользователю, обогащая данным о предмете ценность, описание и тп
+8+| *Service API*
+3+| grpc handlers  3+| Queries 2+| Events Published
+3+a|
+* Save() - сохранение распознанных данных
+* GetParsedPage() - Получение обогащенных данных пользователем
+
+3+a| * N/A 2+a| * N/A
+
+8+| *Observability*
+8+| Key metrics
+8+a|
+
+* recognized_pages_count - количество распознанных изображений
+
+4+| Health check endpoint
+4+| /health
+
+8+| *Dependencies*
+4+| Invokes 4+| Subscribes to
+4+a|
+Matcher
+
+* SearchMatches()
+
+UserRegistry
+
+* GetShotUserInfo
+
+GrpcGateway
+
+* SendEventUpdate
+
+4+a|
+TesseractOcr
+
+* Save()
+
+GrpcGateway
+
+* GetParsedPage
+|===

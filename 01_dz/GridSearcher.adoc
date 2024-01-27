@@ -1,0 +1,41 @@
+= Tarkovloot сервис распознавания
+
+[cols="8*"]
+|===
+3+a| Name: 5+a| GridSearcher
+
+3+a| *Description:*
+5+a|
+Первая обработка скриншота
+8+a| *Capabilities*
+8+a|
+Определяет на скриншоте сетку предметов, находит рамки предметов, в найденных блоках определяет текст, вырезает из скриншота текст
+8+| *Service API*
+3+| grpc handlers  3+| Queries 2+| Events Published
+3+a|
+* ParseScreenshot() - обработка скриншота
+
+3+a| * N/A 2+a| * N/A
+
+8+| *Observability*
+8+| Key metrics
+8+a|
+
+* TImeProcess Потраченное время на один скриншот
+
+4+| Health check endpoint
+4+| /health
+
+
+8+| *Dependencies*
+4+| Invokes 4+| Subscribes to
+4+a|
+UserRegistry:
+
+    * GetShotUserInfo()
+
+4+a|
+GrpcGateway
+
+    * ParseScreenshot()
+|===

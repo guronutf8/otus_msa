@@ -1,0 +1,43 @@
+= Tarkovloot сервис распознавания
+
+[cols="8*"]
+|===
+3+a| Name: 5+a| UserRegistry
+
+3+a| *Description:*
+5+a| Для хранения учетных записей пользователей и взаимодействия с сущностью
+
+8+a| *Capabilities*
+8+a|
+Создание\идентификации пользователей. Хранение и получение токенов доступа
+8+| *Service API*
+3+| grpc handlers  3+| Queries 2+| Events Published
+3+a|
+* Me() - получение данных о пользователе, самим пользователем
+* GetLoginUrl() - получение ссылки, для авторизации через OAuth2 Google
+* Login() - Авторизация пользователя через OAuth2 Google
+* Logout() - Выход из учетной записи
+* GetShotUserInfo() - Получение данные о пользователе
+
+3+a| * N/A 2+a| * N/A
+
+8+| *Observability*
+8+| Key metrics
+8+a|
+
+* user_count - количество пользователей
+
+4+| Health check endpoint
+4+| /health
+
+
+8+| *Dependencies*
+4+| Invokes 4+| Subscribes to
+4+a|
+* N/A
+
+4+a|
+GrpcGateway
+
+* GetShotUserInfo()
+|===
