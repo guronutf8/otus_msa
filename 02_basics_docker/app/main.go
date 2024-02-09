@@ -12,7 +12,12 @@ type HealthCheck struct {
 	Status string `json:"status"`
 }
 
+var count = 0
+
+const version = "v6"
+
 func main() {
+	fmt.Println("hello im " + version)
 	http.HandleFunc("/health/", health)
 	http.HandleFunc("/", index)
 	err := http.ListenAndServe(":8000", nil)
@@ -43,7 +48,13 @@ func index(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "<head><title>otus dz 2</title></head>")
 	fmt.Fprintf(w, "<body>")
 	fmt.Fprintf(w, "Hello")
+	fmt.Fprintf(w, "<br/>service verison %s", version)
+	fmt.Fprintf(w, "<br/>host %s", r.Host)
+	fmt.Fprintf(w, "<br/>RequestURI %s", r.RequestURI)
+	fmt.Fprintf(w, "<br/>counter %d", count)
 	fmt.Fprintf(w, "<br><a href=\"/health/\" >health</a>")
 	fmt.Fprintf(w, "</body>")
 	fmt.Fprintf(w, "<html>")
+	fmt.Println("hello im %s, count %d", version, count)
+	count++
 }

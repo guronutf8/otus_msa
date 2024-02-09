@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: app-kuber
+spec:
+  containers:
+    - name: con-http-basic
+      image: guronn/otus_service:v1
+      ports:
+        - containerPort: 8000
