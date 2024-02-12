@@ -1,3 +1,4 @@
 /.idea/
 /.idea/*
 
+/02_basics_docker/build/*
