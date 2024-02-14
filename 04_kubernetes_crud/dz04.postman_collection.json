@@ -1,0 +1,49 @@
+{
+	"info": {
+		"_postman_id": "3c3f1343-d5fc-4637-943f-e0e9929fa6b9",
+		"name": "dz04",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "31596754"
+	},
+	"item": [
+		{
+			"name": "post_01",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"username\": \"johndoe589\",\r\n  \"firstName\": \"John\",\r\n  \"lastName\": \"Doe\",\r\n  \"email\": \"bestjohn@doe.com\",\r\n  \"phone\": \"+71002003040\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://arch.homework/user"
+			},
+			"response": []
+		},
+		{
+			"name": "post_01",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"username\": \"johndoe589\",\r\n  \"firstName\": \"John\",\r\n  \"lastName\": \"Doe\",\r\n  \"email\": \"bestjohn@doe.com\",\r\n  \"phone\": \"+71002003040\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://arch.homework/user/65cc82b9dc06fc83b6c091ef"
+			},
+			"response": []
+		}
+	]
+}
