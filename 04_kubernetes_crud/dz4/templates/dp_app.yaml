@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp
+  labels:
+    app: webapp
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webapp
+  template:
+    metadata:
+      name: webapp
+      labels:
+        app: webapp
+    spec:
+      containers:
+        - name: webapp
+          image: {{ .Values.app.image }}
+          imagePullPolicy: Always
+          env:
+            - name: mongo_user
+              valueFrom:
+                secretKeyRef:
+                  name: secretdb
+                  key: user
+            - name: mongo_password
+              valueFrom:
+                secretKeyRef:
+                  name: secretdb
+                  key: password
+            - name: mongo_endpoint
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: mongo_endpoint
+      restartPolicy: Always
+

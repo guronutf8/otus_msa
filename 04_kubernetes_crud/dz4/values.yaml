@@ -1,0 +1,9 @@
+DBReplicaCount: 1
+
+
+mongo:
+  name: mongodb
+  image: mongo:7.0.5-jammy
+
+app:
+  image: guronn/otus_dz4:v6

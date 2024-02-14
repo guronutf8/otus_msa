@@ -29,7 +29,6 @@ spec:
   volumes:
     - name: simple-folder
       hostPath:
-#        path: "F:\\backup\\projects\\otus_msa\\volumes"
         path: /volumes
         type: DirectoryOrCreate
 
