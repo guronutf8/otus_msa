@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+  labels:
+    app: grafana
+    dz: {{ .Values.label }}
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+      dz: {{ .Values.label }}
+  template:
+    metadata:
+      name: grafana
+      labels:
+        app: grafana
+        dz: {{ .Values.label }}
+    spec:
+      containers:
+        - name: grafana
+          image: grafana/grafana-enterprise:10.2.4
+          imagePullPolicy: Always
+      restartPolicy: Always
+

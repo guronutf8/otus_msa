@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp
+  labels:
+    app: webapp
+    dz: {{ .Values.label }}
+spec:
+  strategy:
+    type: Recreate
+  replicas: 3
+  selector:
+    matchLabels:
+      app: webapp
+      dz: {{ .Values.label }}
+  template:
+    metadata:
+      name: webapp
+      labels:
+        app: webapp
+        dz: {{ .Values.label }}
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: '/metrics'
+        prometheus.io/port: "8000"
+    spec:
+      containers:
+        - name: webapp
+          image: {{ .Values.app.image }}
+          imagePullPolicy: Always
+          env:
+            - name: mongo_user
+              valueFrom:
+                secretKeyRef:
+                  name: secretdb
+                  key: user
+            - name: mongo_password
+              valueFrom:
+                secretKeyRef:
+                  name: secretdb
+                  key: password
+            - name: mongo_endpoint
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: mongo_endpoint
+      restartPolicy: Always
+

@@ -1,0 +1,2 @@
+>>>>>>>>>>>>>>>>>>>> Click http://arch.homework/ <<<<<<<<<<<<<<<<<<
+Swagger http://arch.homework:8000/documentation/yaml

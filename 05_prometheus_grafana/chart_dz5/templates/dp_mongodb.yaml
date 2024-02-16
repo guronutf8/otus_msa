@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodb
+  labels:
+    app: mongodb
+    dz: {{ .Values.label }}
+{{/*  annotations:*/}}
+{{/*    "helm.sh/hook-weight": "-15"*/}}
+spec:
+  strategy:
+    type: Recreate
+  replicas: {{ .Values.DBReplicaCount }}
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      name: mongodb
+      labels:
+        app: mongodb
+    spec:
+      containers:
+        - name: mongodb
+          image: {{ .Values.mongo.image }}
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: secretdb
+                  key: user
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secretdb
+                  key: password
+      restartPolicy: Always
+

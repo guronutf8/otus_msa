@@ -1,0 +1,33 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: migration
+  labels:
+    app: migration
+    dz: {{ .Values.label }}
+spec:
+  template:
+    spec:
+      containers:
+        - name: migration
+          image: {{ .Values.mongo.image }}
+          env:
+            - name: MONGO_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: secretdb
+                  key: user
+            - name: MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secretdb
+                  key: password
+            - name: mongo_endpoint
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: mongo_endpoint
+{{/*          command: ["/bin/bash", "-c", "mongosh mongodb://\"$MONGO_INITDB_ROOT_USERNAME\":\"$MONGO_INITDB_ROOT_PASSWORD\"@mongo --quiet --eval \"use Users3\" --eval 'db.createCollection(\"Inventory2\")'" ]*/}}
+          command: ["/bin/bash", "-c", "mongosh mongodb://$(MONGO_USERNAME):$(MONGO_PASSWORD)@$(mongo_endpoint) --eval \"use Users\" --eval 'db.createCollection(\"Users\")'" ]
+      restartPolicy: Never
+  backoffLimit: 1

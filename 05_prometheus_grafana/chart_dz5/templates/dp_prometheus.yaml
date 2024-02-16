@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus-server
+  labels:
+    app: prometheus
+    dz: {{ .Values.label }}
+  namespace: default
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus
+      dz: {{ .Values.label }}
+  template:
+    metadata:
+      name: prometheus-server
+      labels:
+        app: prometheus
+        dz: {{ .Values.label }}
+    spec:
+{{/*      serviceAccountName: prometheus-server1*/}}
+      serviceAccountName: prometheus-account
+      containers:
+        - name: prometheus
+          image: prom/prometheus
+          imagePullPolicy: Always
+          ports:
+            - name: prometheus
+              containerPort: 9090
+          volumeMounts:
+            - name: cm-prometheus
+              mountPath: /etc/prometheus2
+          command: ["/bin/prometheus", "--config.file=/etc/prometheus2/prometheus.yml", "--storage.tsdb.path=/prometheus", "--web.console.libraries=/usr/share/prometheus/console_libraries", "--web.console.templates=/usr/share/prometheus/consoles" ]
+      volumes:
+        - name: cm-prometheus
+          configMap:
+            name: cm-prometheus
+
+      restartPolicy: Always
+
+
+

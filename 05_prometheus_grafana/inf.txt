@@ -1,0 +1,72 @@
+docker
+docker pull prom/prometheus-linux-arm64:v2.50.0-rc.0
+docker run -p 9090:9090 prom/prometheus
+
+docker run --rm jordi/ab -c 10 -n 100000 http://host.docker.internal:80/
+docker run --rm jordi/ab -c 10 -n 100000 http://host.docker.internal:80/s2
+docker run --rm jordi/ab -c 10 -n 100000 http://host.docker.internal:80/s25
+
+
+docker run --rm jordi/ab -c 10 -n 100000 http://arch.homework/
+docker run --rm jordi/ab -c 10 -n 100000 http://arch.homework/s2
+docker run --rm jordi/ab -c 10 -n 100000 http://arch.homework/s25
+
+mem
+docker run --rm jordi/ab -c 10 -n 100000 -k http://host.docker.internal:8000/mm
+cpu
+docker run --rm jordi/ab -c 10 -n 100000 -k http://host.docker.internal:8000/mm
+
+docker run --rm jordi/ab -c 10 -n 1000 http://host.docker.internal:8000/
+
+docker run -p 9090:9090 --rm -v config_prometheus:/etc/prometheus --name prometheus --network docker_network prom/prometheus
+
+
+grafana pass dc32br52352dD2@SD
+http://prometheus-server.default.svc.cluster.local:9090
+rate(mux_router_request_duration_seconds_count{ route=~"/s.*"}[60s])
+
+запросов в секунду
+rate(mux_router_request_duration_seconds_count{ route="/s2", host="host.docker.internal"}[2m])
+rate(mux_router_request_duration_seconds_bucket{ route="/s25", host="host.docker.internal"}[2m])
+
+квантиль
+histogram_quantile(0.95, sum by (le,route) (rate (mux_router_request_duration_seconds_bucket{  host="host.docker.internal"}[5m])))
+histogram_quantile(0.95, sum by (le) (rate (mux_router_request_duration_seconds_bucket{ route="/s2", host="host.docker.internal"}[5m])))
+histogram_quantile(0.50, sum by (le,route) (rate (mux_router_request_duration_seconds_bucket{  host="host.docker.internal"}[5m])))
+
+http://localhost:9090/api/v1/label/instance/values
+http://localhost:9090/api/v1/labels
+
+
+сгрупирует по урлу, сумирую по всем нодам
+sum by uri
+
+minikube start --listen-address='0.0.0.0' && minikube tunnel
+Set-Alias -option allscope -scope global -Name ks -Value kubectl
+
+
+PS F:\backup\projects\otus_msa\05_prometheus_grafana> kubectl apply --kustomize github.com/kubernetes/ingress-nginx/deploy/prometheus/
+serviceaccount/prometheus-server created
+role.rbac.authorization.k8s.io/prometheus-server created
+rolebinding.rbac.authorization.k8s.io/prometheus-server created
+configmap/prometheus-configuration-9hghh7d6bd created
+service/prometheus-server created
+deployment.apps/prometheus-server created
+
+kubectl port-forward service/hello-minikube 7080:8080 - делает тунель http://localhost:7080/.ks describe cm prometheus-configuration-9hghh7d6bd --namespace=ingress-nginx
+https://github.com/kubernetes/ingress-nginx/tree/main/deploy/prometheus
+
+-------------------
+helm repo add ckotzbauer https://ckotzbauer.github.io/helm-charts
+helm install my-cadvisor ckotzbauer/cadvisor --version 2.3.1
+helm install my-cadvisor ckotzbauer/cadvisor --version 2.3.1 --store_container_labels=true
+helm uninstall my-cadvisor
+http://cadvisor/metrics
+
+increase(process_cpu_seconds_total{app="webapp"}[30s])
+container_memory_working_set_bytes{container_label_io_kubernetes_container_name="webapp", id=~"/docker/.*"}
+sum by (container_label_io_kubernetes_pod_name) (container_memory_rss{container_label_io_kubernetes_container_name="webapp", id=~"/docker/.*"})
+-------------------
+docker run -it --rm -p 9216:9216 -p 17001:17001 percona/mongodb_exporter:0.20 --mongodb.uri=mongodb://root:root@host.docker.internal:27017/?authMechanism=SCRAM-SHA-1 --mongodb.indexstats-colls=Users.Users --mongodb.collstats-colls=Users.Users
+--mongodb.uri=mongodb://root:root@host.docker.internal:27017/?authMechanism=SCRAM-SHA-1 --mongodb.indexstats-colls=Users.Users --mongodb.collstats-colls=Users.Users
+-------------------
