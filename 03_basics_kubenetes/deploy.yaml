@@ -21,7 +21,8 @@ spec:
     spec:
       containers:
         - name: app-http-simple
-          image: guronn/otus_service:v6
+          image: guronn/otus_service:v7
+          imagePullPolicy: Always
           ports:
-            - name: webss
+            - name: web
               containerPort: 8000

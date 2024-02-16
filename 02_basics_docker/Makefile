@@ -11,5 +11,5 @@ build_nc:
 	docker build --no-cache . --platform linux/amd64 -t guronn/otus_dz2
 
 b2:
-	docker build . --platform linux/amd64 -t guronn/otus_service:v6
-	docker push guronn/otus_service:v6
+	docker build . --platform linux/amd64 -t guronn/otus_service:v7
+	docker push guronn/otus_service:v7

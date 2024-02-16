@@ -6,7 +6,7 @@ spec:
   selector:
       env: prod
   ports:
-    - port: 80
+    - port: 2000
       protocol: TCP
       targetPort: 8000
-  type: LoadBalancer
+  type: ClusterIP

@@ -12,18 +12,19 @@ spec:
     - host: arch.homework
       http:
         paths:
-          - path: /otusapp/(.*?)(/|$)(.*)
+#          - path: /otusapp/(.*?)(/|$)(.*) со слешом на коце
+          - path: /otusapp/(.*?)(/|$)(/|.*)
             pathType: ImplementationSpecific
             backend:
               service:
                 name: http-simple-service
                 port:
-                  number: 80
-          - path: /health
+                  number: 2000
+          - path: /
             pathType: Prefix
             backend:
               service:
                 name: http-simple-service
                 port:
-                  number: 80
+                  number: 2000
 

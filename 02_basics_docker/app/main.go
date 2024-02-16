@@ -14,10 +14,11 @@ type HealthCheck struct {
 
 var count = 0
 
-const version = "v6"
+const version = "v7"
 
 func main() {
 	fmt.Println("hello im " + version)
+	http.HandleFunc("/health", health)
 	http.HandleFunc("/health/", health)
 	http.HandleFunc("/", index)
 	err := http.ListenAndServe(":8000", nil)
