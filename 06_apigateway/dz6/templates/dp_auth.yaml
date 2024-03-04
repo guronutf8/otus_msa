@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth
+  labels:
+    app: auth
+    dz: {{ .Values.label }}
+  namespace: {{ .Values.namespace }}
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth
+      dz: {{ .Values.label }}
+  template:
+    metadata:
+      name: auth
+      labels:
+        app: auth
+        dz: {{ .Values.label }}
+    spec:
+      containers:
+        - name: auth
+          image: {{ .Values.app_auth.image }}
+          imagePullPolicy: Always
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8001
+            initialDelaySeconds: 5
+            periodSeconds: 3
+      restartPolicy: Always
+

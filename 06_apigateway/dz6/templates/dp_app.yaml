@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+  labels:
+    app: app
+    dz: {{ .Values.label }}
+  namespace: {{ .Values.namespace }}
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app
+      dz: {{ .Values.label }}
+  template:
+    metadata:
+      name: app
+      labels:
+        app: app
+        dz: {{ .Values.label }}
+    spec:
+      containers:
+        - name: app
+          image: {{ .Values.app_me.image }}
+          imagePullPolicy: Always
+      restartPolicy: Always
+

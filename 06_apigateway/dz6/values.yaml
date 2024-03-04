@@ -1,0 +1,12 @@
+DBReplicaCount: 1
+
+
+
+app_auth:
+  image: guronn/otus_dz6_auth:v2
+app_me:
+  image: guronn/otus_dz6_app:v2
+
+
+namespace: dz6
+label: dz6

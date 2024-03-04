@@ -1,0 +1,81 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: app
+  annotations:
+    nginx.ingress.kubernetes.io/auth-url: "http://auth.{{ .Values.namespace}}.svc.cluster.local:8001/auth"
+    nginx.ingress.kubernetes.io/auth-signin: "http://$host/signin"
+    nginx.ingress.kubernetes.io/auth-response-headers: "X-User,X-Email,X-First-Name,X-Last-Name"
+  namespace: {{ .Values.namespace }}
+spec:
+  rules:
+    - host: arch.homework
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: app
+                port:
+                  number: 8000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: auth
+  namespace: {{ .Values.namespace }}
+spec:
+  rules:
+    - host: arch.homework
+      http:
+        paths:
+          - path: /authF
+            pathType: Prefix
+            backend:
+              service:
+                name: auth
+                port:
+                  number: 8001
+          - path: /authS
+            pathType: Prefix
+            backend:
+              service:
+                name: auth
+                port:
+                  number: 8001
+          - path: /login
+            pathType: Prefix
+            backend:
+              service:
+                name: auth
+                port:
+                  number: 8001
+          - path: /logout
+            pathType: Prefix
+            backend:
+              service:
+                name: auth
+                port:
+                  number: 8001
+          - path: /signin
+            pathType: Prefix
+            backend:
+              service:
+                name: auth
+                port:
+                  number: 8001
+          - path: /registration
+            pathType: Prefix
+            backend:
+              service:
+                name: auth
+                port:
+                  number: 8001
+          - path: /changeEmail
+            pathType: Prefix
+            backend:
+              service:
+                name: auth
+                port:
+                  number: 8001

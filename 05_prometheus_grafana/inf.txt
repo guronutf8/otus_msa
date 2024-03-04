@@ -41,7 +41,8 @@ http://localhost:9090/api/v1/labels
 сгрупирует по урлу, сумирую по всем нодам
 sum by uri
 
-minikube start --listen-address='0.0.0.0' && minikube tunnel
+minikube start --listen-address='0.0.0.0'
+minikube tunnel
 Set-Alias -option allscope -scope global -Name ks -Value kubectl
 
 

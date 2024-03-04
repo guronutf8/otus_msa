@@ -1,0 +1,12 @@
+FROM golang:alpine3.19 as builder
+LABEL authors="Pavel.Ok"
+WORKDIR .
+COPY auth app
+WORKDIR ./app
+RUN go build -o build/webserver main.go
+
+FROM alpine:3.19.1
+WORKDIR /home/
+COPY --from=builder /go/app/build/webserver auth
+EXPOSE 8001
+CMD ./auth
