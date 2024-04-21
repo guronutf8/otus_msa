@@ -1,0 +1,17 @@
+mongo:
+  name: mongodb
+  image: mongo:7.0.5-jammy
+
+label: 07dz
+
+order:
+  image: guronn/otus_dz7_order:v1
+
+delivery:
+  image: guronn/otus_dz7_delivery:v1
+
+store:
+  image: guronn/otus_dz7_store:v1
+
+pay:
+  image: guronn/otus_dz7_pay:v1

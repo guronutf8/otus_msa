@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: configmap
+data:
+  mongo_endpoint: "mongodb://root:root@mongodb:27017/?authMechanism=SCRAM-SHA-1"
+  store: "http://store:8002"
+  pay: "http://pay:8003"
+  delivery: "http://delivery:8004"

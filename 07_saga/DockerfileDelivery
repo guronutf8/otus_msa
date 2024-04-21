@@ -1,0 +1,12 @@
+FROM golang:alpine3.19 as builder
+LABEL authors="Pavel.Ok"
+WORKDIR .
+COPY eshop app
+WORKDIR ./app
+RUN go build -o build/app cmd/ServiceDelivery/main.go
+
+FROM alpine:3.19.1
+WORKDIR /home/
+COPY --from=builder /go/app/build/app app
+EXPOSE 8004
+CMD ./app

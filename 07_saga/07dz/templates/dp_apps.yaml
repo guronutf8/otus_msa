@@ -1,0 +1,152 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order
+  labels:
+    app: order
+    dz: {{ .Values.label }}
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order
+      dz: {{ .Values.label }}
+  template:
+    metadata:
+      name: order
+      labels:
+        app: order
+        dz: {{ .Values.label }}
+    spec:
+      containers:
+        - name: order
+          image: {{ .Values.order.image }}
+          imagePullPolicy: Always
+          env:
+            - name: DB
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: mongo_endpoint
+            - name: DELIVERY
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: delivery
+            - name: PAY
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: pay
+            - name: STORE
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: store
+      restartPolicy: Always
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: store
+  labels:
+    app: store
+    dz: {{ .Values.label }}
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: store
+      dz: {{ .Values.label }}
+  template:
+    metadata:
+      name: store
+      labels:
+        app: store
+        dz: {{ .Values.label }}
+    spec:
+      containers:
+        - name: store
+          image: {{ .Values.store.image }}
+          imagePullPolicy: Always
+          env:
+            - name: DB
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: mongo_endpoint
+      restartPolicy: Always
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pay
+  labels:
+    app: pay
+    dz: {{ .Values.label }}
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pay
+      dz: {{ .Values.label }}
+  template:
+    metadata:
+      name: pay
+      labels:
+        app: pay
+        dz: {{ .Values.label }}
+    spec:
+      containers:
+        - name: pay
+          image: {{ .Values.pay.image }}
+          imagePullPolicy: Always
+          env:
+            - name: DB
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: mongo_endpoint
+      restartPolicy: Always
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: delivery
+  labels:
+    app: delivery
+    dz: {{ .Values.label }}
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: delivery
+      dz: {{ .Values.label }}
+  template:
+    metadata:
+      name: delivery
+      labels:
+        app: delivery
+        dz: {{ .Values.label }}
+    spec:
+      containers:
+        - name: delivery
+          image: {{ .Values.delivery.image }}
+          imagePullPolicy: Always
+          env:
+            - name: DB
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: mongo_endpoint
+      restartPolicy: Always

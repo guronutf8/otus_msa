@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: app-ingress
+  labels:
+    dz: {{ .Values.label }}
+spec:
+  rules:
+    #- host: arch.homework
+      - http:
+          paths:
+            - path: /
+              pathType: Prefix
+              backend:
+                service:
+                  name: order
+                  port:
+                    number: 8001
