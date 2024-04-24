@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: configmap
+data:
+  mongo_endpoint: "mongodb://root:root@mongodb:27017/?authMechanism=SCRAM-SHA-1"
+  nats: "http://nats:4222"

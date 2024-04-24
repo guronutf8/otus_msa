@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nats
+  labels:
+    app: nats
+    dz: {{.Values.label }}
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nats
+  template:
+    metadata:
+      name: nats
+      labels:
+        app: nats
+    spec:
+      containers:
+        - name: nats
+          image: nats:2.10.12
+          imagePullPolicy: IfNotPresent
+          command: [ "/nats-server", "-js","--server_name" ,"08dz" ]
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nats
+  labels:
+    dz: {{.Values.label }}
+spec:
+  selector:
+    app: nats
+  ports:
+    - port: 4222
+      protocol: TCP
+      targetPort: 4222
+  type: LoadBalancer
+

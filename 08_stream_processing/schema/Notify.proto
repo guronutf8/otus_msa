@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option go_package = "/NotifyPB";
+
+package Notify;
+
+service Notify {
+  rpc SendNotify (SendNotifyRequest) returns (SendNotifyResponse) {}
+}
+
+message SendNotifyRequest{
+  string user = 1;
+  bool result = 2;
+}
+
+message SendNotifyResponse{
+}

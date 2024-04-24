@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option go_package = "/OrderPB";
+
+package Order;
+
+service Order {
+  rpc Create (CreateRequest) returns (CreateResponse) {}
+}
+message CreateRequest {
+  string user = 1;
+  int32 sum = 2;
+}
+
+message CreateResponse {
+  string err = 1;
+}

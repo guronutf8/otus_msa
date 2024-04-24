@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+option go_package = "/BillingPB";
+
+package Billing;
+
+service Billing {
+  rpc ChangeBalance (DepositCashRequest) returns (DepositCashResponse) {}
+  rpc CreateUser (CreateUserRequest) returns (CreateUserResponse) {}
+}
+
+message CreateUserRequest{
+  string user = 1;
+}
+
+message CreateUserResponse{
+  bool result = 1;
+}
+
+message DepositCashRequest {
+  string user = 1;
+  int32 sum = 2;
+}
+
+message DepositCashResponse {
+  CBResult result = 1;
+}
+
+enum CBResult {
+  CBResult_UNSPECIFIED = 0;
+  CBResult_Ok = 1;
+  CBResult_Enough_cash = 2;
+  CBResult_User_not_found = 3;
+}
