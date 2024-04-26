@@ -50,18 +50,10 @@
 положительный\отрицательный)
 
 Посмотреть лог GET `/List`
-`{
-"user":"Pavel",
-"sum":10
-}`
 
 ## IDL
 
 Запросы, сервисы, сообщения брокера описаны в `schema/*.proto`
-
-## Sequence diagram
-
-![Sequence diagram](https://www.plantuml.com/plantuml/svg/XPJFRjf04CRl-nIZd5e9r3kgK4fIzLALI6qVm0rkQuK0jSqXjn0KvH0aL2ddLdq3OfNW1Z2lCFj6_NPsOUCKcaY9x6_dps-_cNW_IOCuxP-sLN2STcDwrJgDEkjdyrUf7WAYuwWNT59gHErsrFb29R4PjyAufBphfj7dCwLQGHfy2fAGFYPXd1msl60ZeAXl_R0Vqb5mbZJYxWaAYU02dAG4XQhr3K2DZfhlFz2BWpWCqX3b4UJEgdNNhKPymmNVyeGpdkinJtb1l88qroEUSG5veYyWuv0u8_xEDnNI0-Ab7l8S1vc-HewKcFC4yW1P2uVpibfzmDCy-G_cOTZh9b5w42HVjs7-vC9oyL8moortCZ_D8QDPGyWBoHLc_9idjj4C3_VudIbb0v3cfm6u0krM-lonYtF7SITu3-heeNXvYvG2obIVUquBv2WTC_Homnzynxa7p7bc8AvC9Pv2pqljDsN0xHrTyDHxMUW1OX5lW620hICYG9SyAKzukjjmy-FxkINru5kSabxmn9Ip42LwqpihNK-FG2Wl6UTW71AICtDYLa-sSWbF_YZR7EuznlZbitVaoWKXhgJ3jRaYSYxmF1O_jgRfSONs_jq6N0XdbtlA0NbVC0ZPDdqfyKiNZG8vhtQqUEQi7yAG7B8PtGZ-R3pBWJcga1pcW3Kbdw__UPMIxrUrRW5gzEOrzlvjbAGaq1YcyGOW6CoLsGVYUmEWX-Kzb-fRBcJhOv6j8FSJ4sMpTWngF-oqy8Nz2m00)
 
 ## Тестирование
 
