@@ -1,0 +1,14 @@
+mongo:
+  name: mongodb
+  image: mongo:7.0.5-jammy
+
+label: 09dz
+
+order:
+  image: guronn/otus_dz9_order:v1
+
+billing:
+  image: guronn/otus_dz9_billing:v1
+
+notify:
+  image: guronn/otus_dz9_notify:v1

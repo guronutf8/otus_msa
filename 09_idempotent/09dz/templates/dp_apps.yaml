@@ -1,0 +1,117 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order
+  labels:
+    app: order
+    dz: {{ .Values.label }}
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order
+      dz: {{ .Values.label }}
+  template:
+    metadata:
+      name: order
+      labels:
+        app: order
+        dz: {{ .Values.label }}
+    spec:
+      containers:
+        - name: order
+          image: {{ .Values.order.image }}
+          imagePullPolicy: Always
+          env:
+            - name: DB
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: mongo_endpoint
+            - name: NATS
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: nats
+      restartPolicy: Always
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: billing
+  labels:
+    app: billing
+    dz: {{ .Values.label }}
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: billing
+      dz: {{ .Values.label }}
+  template:
+    metadata:
+      name: billing
+      labels:
+        app: billing
+        dz: {{ .Values.label }}
+    spec:
+      containers:
+        - name: billing
+          image: {{ .Values.billing.image }}
+          imagePullPolicy: Always
+          env:
+            - name: DB
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: mongo_endpoint
+            - name: NATS
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: nats
+      restartPolicy: Always
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notify
+  labels:
+    app: notify
+    dz: {{ .Values.label }}
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notify
+      dz: {{ .Values.label }}
+  template:
+    metadata:
+      name: notify
+      labels:
+        app: notify
+        dz: {{ .Values.label }}
+    spec:
+      containers:
+        - name: notify
+          image: {{ .Values.notify.image }}
+          imagePullPolicy: Always
+          env:
+            - name: DB
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: mongo_endpoint
+            - name: NATS
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: nats
+      restartPolicy: Always
+---

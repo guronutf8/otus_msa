@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+option go_package = "/OrderPB";
+
+package Order;
+
+service Order {
+  rpc Create (CreateRequest) returns (CreateResponse) {}
+  rpc GetBasket(GetBasketRequest) returns (GetBasketResponse) {}
+}
+
+message GetBasketRequest{
+  string User = 1;
+}
+
+message GetBasketResponse{
+  string BasketId = 1;
+}
+
+message CreateRequest {
+  string user = 1;
+  int32 sum = 2;
+  string basket = 3;
+}
+
+message CreateResponse {
+  string err = 1;
+}

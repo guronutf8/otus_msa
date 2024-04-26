@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+option go_package = "/NatsPB";
+
+package Nats;
+
+message DepositCash {
+  string user = 1;
+  int32 sum = 2;
+}
+
+
+message PayOrder {
+  string user = 1;
+  int32 sum = 2;
+  string basket = 3;
+}
+
+
+message Notify {
+  string user = 1;
+  bool result = 2;
+}
