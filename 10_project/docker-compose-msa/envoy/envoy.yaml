@@ -1,0 +1,199 @@
+#admin:
+#  address:
+#    socket_address:
+#      protocol: TCP
+#      address: 0.0.0.0
+#      port_value: 9901
+static_resources:
+  listeners:
+    - name: listener_0
+      address:
+        socket_address:
+          protocol: TCP
+          address: 0.0.0.0
+          port_value: 10000
+      per_connection_buffer_limit_bytes: 20971520
+      filter_chains:
+        - filters:
+            - name: envoy.filters.network.http_connection_manager
+              typed_config:
+                "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+                #                scheme_header_transformation:
+                #                  scheme_to_overwrite: https
+                stat_prefix: grpc_json
+                upgrade_configs:
+                  - upgrade_type: websocket
+                access_log:
+                  - name: envoy.access_loggers.stdout
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.access_loggers.stream.v3.StdoutAccessLog
+                codec_type: AUTO
+                route_config:
+                  name: local_route
+                  virtual_hosts:
+                    - name: local_service
+                      domains: [ "*" ]
+                      routes:
+                        #                        - match:
+                        #                            prefix: "/lol"
+                        #                          redirect:
+                        #                            path_redirect: "/home"
+                        ##                            https_redirect: true
+                        - match:
+                            prefix: "/api/notify"
+                          route:
+                            cluster: notify
+                            timeout: 60s
+                        - match:
+                            prefix: "/tarkovloot.Auth"
+                          route:
+                            cluster: auth
+                            timeout: 60s
+                        - match:
+                            prefix: "/tarkovloot.GridSearcher"
+                          route:
+                            cluster: gridsearcher
+                            timeout: 60s
+                        - match:
+                            prefix: "/tarkov_loot_parse.Monolith"
+                          route:
+                            cluster: monolith
+                            timeout: 60s
+
+                http_filters:
+                  - name: jwt
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.filters.http.jwt_authn.v3.JwtAuthentication
+                      providers:
+                        provider_name2:
+                          issuer: tarkovloot
+                          from_cookies:
+                            - jwt
+                          local_jwks:
+                            inline_string: '{"keys": [{
+  "e": "AQAB",
+  "kid": "test envoy key",
+  "kty": "RSA",
+  "n": "-------SECRET---------"
+}]}'
+                          forward: true
+                          forward_payload_header: x-jwt-payload
+                      rules:
+                        - match:
+                            prefix: /api/monolith
+                          requires:
+                            provider_name: provider_name2
+                        - match:
+                            prefix: /api/notify
+                          requires:
+                            provider_name: provider_name2
+                        - match:
+                            prefix: /api/gridsearcher
+                          requires:
+                            provider_name: provider_name2
+
+                  - name: envoy.filters.http.grpc_json_transcoder_monolith
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.filters.http.grpc_json_transcoder.v3.GrpcJsonTranscoder
+                      proto_descriptor: "/protos/monolith.pb"
+                      services: [ "tarkov_loot_parse.Monolith" ]
+                      print_options:
+                        add_whitespace: true
+                        always_print_primitive_fields: true
+                        always_print_enums_as_ints: false
+                        preserve_proto_field_names: false
+                  - name: envoy.filters.http.grpc_json_transcoder_auth
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.filters.http.grpc_json_transcoder.v3.GrpcJsonTranscoder
+                      proto_descriptor: "/protos/auth.pb"
+                      services: [ "tarkovloot.Auth" ]
+                      print_options:
+                        add_whitespace: true
+                        always_print_primitive_fields: true
+                        always_print_enums_as_ints: false
+                        preserve_proto_field_names: false
+                  - name: envoy.filters.http.grpc_json_transcoder_gridsearcher
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.filters.http.grpc_json_transcoder.v3.GrpcJsonTranscoder
+                      proto_descriptor: "/protos/gridsearcher.pb"
+                      services: [ "tarkovloot.GridSearcher" ]
+                      print_options:
+                        add_whitespace: true
+                        always_print_primitive_fields: true
+                        always_print_enums_as_ints: false
+                        preserve_proto_field_names: false
+                  - name: envoy.filters.http.router
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
+  clusters:
+    - name: monolith
+      connect_timeout: 30s
+      type: LOGICAL_DNS
+      dns_lookup_family: V4_ONLY
+      typed_extension_protocol_options:
+        envoy.extensions.upstreams.http.v3.HttpProtocolOptions:
+          "@type": type.googleapis.com/envoy.extensions.upstreams.http.v3.HttpProtocolOptions
+          explicit_http_config:
+            http2_protocol_options: { }
+      lb_policy: ROUND_ROBIN
+      load_assignment:
+        cluster_name: monolith
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: monolith
+                      port_value: 50051
+    - name: auth
+      connect_timeout: 30s
+      type: LOGICAL_DNS
+      dns_lookup_family: V4_ONLY
+      typed_extension_protocol_options:
+        envoy.extensions.upstreams.http.v3.HttpProtocolOptions:
+          "@type": type.googleapis.com/envoy.extensions.upstreams.http.v3.HttpProtocolOptions
+          explicit_http_config:
+            http2_protocol_options: { }
+      lb_policy: ROUND_ROBIN
+      load_assignment:
+        cluster_name: auth
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: auth
+                      port_value: 50053
+    - name: gridsearcher
+      connect_timeout: 30s
+      type: LOGICAL_DNS
+      dns_lookup_family: V4_ONLY
+      typed_extension_protocol_options:
+        envoy.extensions.upstreams.http.v3.HttpProtocolOptions:
+          "@type": type.googleapis.com/envoy.extensions.upstreams.http.v3.HttpProtocolOptions
+          explicit_http_config:
+            http2_protocol_options: { }
+      lb_policy: ROUND_ROBIN
+      load_assignment:
+        cluster_name: gridsearcher
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: gridsearcher
+                      port_value: 50052
+    - name: notify
+      connect_timeout: 30s
+      type: LOGICAL_DNS
+      dns_lookup_family: V4_ONLY
+      lb_policy: ROUND_ROBIN
+      load_assignment:
+        cluster_name: notify
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: notify
+                      port_value: 8057

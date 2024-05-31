@@ -1,0 +1,96 @@
+workspace {
+
+    model {
+        userWeb = person "UserWeb" "Browser"
+        userApp = person "UserApp" "Desktop app"
+        group "System" {
+            tarkovloot = softwareSystem "Tarkovloot" {
+                webapp = container "Web Application" {
+                    # userWeb -> this "Использует"
+                }
+                backend = container "Backend" {
+                    nginx = component "Frontend static"
+                    envoy = component "Reverse proxy"
+                    auth = component "Auth"
+                    monolith = component "Monolith"
+                    gridsearcher = component "GridSearcher"
+                    ocr = component "Ocr"
+                    notify = component "Notify"
+
+                    broker = component "NATS"
+
+                    usersDB = component "UsersDB"
+                    storeDB = component "StoreDB"
+                    inventoryDB = component "InventoryDB"
+                }
+            }
+            googleOauth2 = softwareSystem "googleOauth2" {
+            }
+        }
+        # контекст
+        userWeb -> tarkovloot "Взаимодействует с системой [HTTP]"
+        userWeb -> googleOauth2 "Идентификация через OAuth2 [HTTP]"
+        userApp -> tarkovloot "Взаимодействует с системой [GRPC]"
+        googleOauth2 -> tarkovloot "Процесс авторизации [HTTP]"
+
+        # Взаимодействия пользоваля
+        userWeb -> auth "Аутентификаци в TarkovLoot и получание jwt [HTTP-GET]"
+        userWeb -> monolith "/api/me получение токена для десктопного клиента [HTTP-GET application/json]"
+        userWeb -> notify "/api/notify Нотификация [WebSocket]"
+
+        # межсервисное взаимодействие
+        userWeb -> gridsearcher "/api/gridsearcher/UploadScreenShot отправка скриншета для обрработки [HTTP-POST multipart/form]"
+        gridsearcher -> notify "event new image"
+        notify -> userWeb "Уведомление что скриншот получен [WebSocket]"
+        gridsearcher -> monolith "get new page"
+        gridsearcher -> broker "отправка блоков на обработку"
+        broker -> ocr "обработка блоков(чтение)"
+        ocr -> broker "отправляем данные с блоков"
+        broker -> monolith "собираем все блоки в единую страницу"
+        monolith -> inventoryDB "сохраняем результат страницы в БД"
+        monolith -> notify "EVENT parse complete"
+        notify -> userWeb "уведомление пользователю"
+        userWeb -> monolith "/api/monolith/GetParsedPage получение обработанных данных [HTTP-POST application/json]"
+        monolith -> inventoryDB "загружаем данные для пользователя"
+
+
+        userApp -> gridsearcher "Отправляет скриншет на обработку [GRPC]"
+
+        auth -> usersDB
+    }
+
+
+
+    views {
+        systemContext tarkovloot "MainContext"{
+            include googleOauth2 userWeb userApp
+            autolayout
+        }
+
+        container tarkovloot "Container" {
+            include *
+            autolayout lr
+        }
+
+        component backend "ContainersHZ" {
+            include *
+            animation {
+                # backend hz
+                # userApp hz
+
+            }
+            autoLayout lr
+            description "The container diagram for the Internet Banking System."
+        }
+
+        theme default
+
+        styles {
+            element "UsersDB" {
+                shape cylinder
+            }
+
+        }
+    }
+
+}

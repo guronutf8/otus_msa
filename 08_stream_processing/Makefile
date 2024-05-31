@@ -27,6 +27,11 @@ build_push_notify:
 	docker build -f ./DockerfileNotify . --platform linux/amd64 -t guronn/otus_dz8_notify:v1 --progress=plain
 	docker push guronn/otus_dz8_notify:v1
 
+
+build_push_order_private:
+	docker build -f ./DockerfileOrder . --platform linux/amd64 -t poo.tarkovloot.dev/repository/docker/otus_dz8_order:v1 --progress=plain
+	docker push poo.tarkovloot.dev/repository/docker/otus_dz8_order:v1
+
 build_push: build_push_order build_push_billing build_push_notify
 
 #kubectl create ns 08dz

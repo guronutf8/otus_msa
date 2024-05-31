@@ -1,0 +1,70 @@
+version: "3.3"
+
+services:
+  envoy:
+    image: envoyproxy/envoy:v1.30-latest
+    hostname: "envoy"
+    ports:
+      - "10000:10000"
+    volumes:
+      - ./envoy/envoy.yaml:/etc/envoy/envoy.yaml:ro
+      - F:\backup\projects\tarkov_loot_parse\monolith.pb:/protos/monolith.pb
+      - F:\backup\projects\tarkovloot\Auth\auth.pb:/protos/auth.pb
+      - F:\backup\projects\tarkovloot\GridSearcher\gridsearcher.pb:/protos/gridsearcher.pb
+    command: /usr/local/bin/envoy -c /etc/envoy/envoy.yaml
+  #    command: /usr/local/bin/envoy -c /etc/envoy/envoy.yaml -l trace
+  auth:
+    image: poo.tarkovloot.dev:442/repository/docker/tarkovloot-auth:v1
+    hostname: auth
+    ports:
+      - "50053:50053"
+    environment:
+      - DB=mongodb://*******SECRET********
+      - GOOGLE_OAUTH2_CLIENT_ID=*******SECRET********
+      - GOOGLE_OAUTH2_SECRET=*******SECRET********
+      - GRPC_ENDPOINT=:50053
+      - JWT_SECRET=/etc/envoy/id_rsa
+    volumes:
+      - F:\backup\projects\tarkov_loot_server\keys\jwt\id_rsa:/etc/envoy/id_rsa:ro
+  notify:
+    image: poo.tarkovloot.dev:442/repository/docker/tarkovloot-notify:v1
+    hostname: notify
+    ports:
+      - "50054:50054"
+    environment:
+      - DB=mongodb://*******SECRET********
+      - GRPC_ENDPOINT=:50054
+      - WEBSERVER_PORT=8057
+      - GRPC_TOKEN=*******SECRET********
+  monolith:
+    image: poo.tarkovloot.dev:442/repository/docker/tarkovloot-backend-monolith:v2
+    hostname: monolith
+    volumes:
+      - F:\backup\projects\tarkov_loot_server\configs\monolith\config.json:/root/config/config.json:ro
+    ports:
+      - "50051:50051"
+    command: [ "/root/tarkov_loot_parse/monolith","-cfgWebServer","/root/config/config.json" ]
+  gridsearcher:
+    image: poo.tarkovloot.dev:442/repository/docker/tarkovloot-gridsearcher:v1
+    hostname: gridsearcher
+    volumes:
+      - F:\backup\projects\tarkov_loot_server\configs\gridsearcher\config.json:/root/project/config/config.json:ro
+    ports:
+      - "50052:50052"
+  ocr:
+    image: poo.tarkovloot.dev:442/repository/docker/tarkovloot-ocr:v1
+    hostname: ocr
+    volumes:
+      - F:\backup\projects\tarkov\easyocr_py\model\:/root/models/:ro
+    environment:
+      - NATS_URI=nats://tarkovloot.dev:4922
+      - NET_NAME=custom_example
+      - STORE_DIR=/root/models/
+      - NATS_PASSWORD=*******SECRET********
+      - NATS_USER=nats
+
+
+
+networks:
+  net:
+    external: true
